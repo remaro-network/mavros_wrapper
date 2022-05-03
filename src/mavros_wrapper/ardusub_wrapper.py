@@ -2,6 +2,7 @@ import rospy
 from mavros_msgs.msg import OverrideRCIn
 from mavros_wrapper.mavros_wrapper import *
 
+# I would say that it more of a bluerov ardusub wrapper
 class ArduSubWrapper(MavrosWrapper):
     def __init__(self):
         super().__init__()
@@ -21,29 +22,17 @@ class ArduSubWrapper(MavrosWrapper):
 
         # convert normalized value(-1 to 1) to a pwm value(1100 to 1900)
         normalized_to_pwm = lambda x: int((1900-1500)*x + 1500)
-        # channels = [normalized_to_pwm(pitch),
-        #             normalized_to_pwm(roll),
-        #             normalized_to_pwm(throttle),
-        #             normalized_to_pwm(yaw),
-        #             normalized_to_pwm(forward),
-        #             normalized_to_pwm(lateral),
-        #             normalized_to_pwm(camera_pan),
-        #             normalized_to_pwm(camera_tilt),
-        #             normalized_to_pwm(light_level1),
-        #             normalized_to_pwm(light_level2),
-        #             normalized_to_pwm(video_switch),
-        #             0, 0, 0, 0, 0, 0, 0]
-        channels = [1500,
-                    1500,
-                    1500,
-                    1500,
-                    1900,
-                    1500,
-                    1500,
-                    1500,
-                    1500,
-                    1500,
-                    1500,
+        channels = [normalized_to_pwm(pitch),
+                    normalized_to_pwm(roll),
+                    normalized_to_pwm(throttle),
+                    normalized_to_pwm(yaw),
+                    normalized_to_pwm(forward),
+                    normalized_to_pwm(lateral),
+                    normalized_to_pwm(camera_pan),
+                    normalized_to_pwm(camera_tilt),
+                    normalized_to_pwm(light_level1),
+                    normalized_to_pwm(light_level2),
+                    normalized_to_pwm(video_switch),
                     0, 0, 0, 0, 0, 0, 0]
 
         override_msg = OverrideRCIn()
