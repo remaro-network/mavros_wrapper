@@ -2,19 +2,20 @@ import rospy
 from mavros_msgs.msg import OverrideRCIn
 from mavros_wrapper.mavros_wrapper import *
 
-# I would say that it more of a bluerov ardusub wrapper
+# I would say that it is more of a bluerov ardusub wrapper
 class ArduSubWrapper(MavrosWrapper):
     def __init__(self):
         super().__init__()
+        self.override_rc_thread = None
 
     # arguments should be a normalized float value ranging from -1 to 1
     # 0 is translated to 1500 pwm, -1 to 1100, and 1 to 1900
-    def rc_overide(self, pitch=0, roll=0, throttle=0, yaw=0,
+    def rc_override(self, pitch=0, roll=0, throttle=0, yaw=0,
                     forward=0, lateral=0, camera_pan=0,
                     camera_tilt=0, light_level1=0, light_level2=0,
                     video_switch=0):
 
-        rc_overide_pub = rospy.Publisher(
+        rc_override_pub = rospy.Publisher(
             'mavros/rc/override',
             OverrideRCIn,
             queue_size = 10,
@@ -38,4 +39,4 @@ class ArduSubWrapper(MavrosWrapper):
         override_msg = OverrideRCIn()
         override_msg.channels = channels
 
-        rc_overide_pub.publish(override_msg)
+        rc_override_pub.publish(override_msg)
