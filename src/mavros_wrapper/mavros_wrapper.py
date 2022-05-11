@@ -1,36 +1,33 @@
-import rospy
-from mavros_msgs.msg import State
-from mavros_msgs.srv import CommandBool, SetMode
+import rclpy
+from rclpy.node import Node
 
-class MavrosWrapper:
-    def __init__(self):
+from mavros_msgs.msg import State
+from mavros_msgs.srv import CommandBool
+from mavros_msgs.srv import SetMode
+
+
+class MavrosWrapper(Node):
+    def __init__(self, node_name='mavros_wrapper'):
+        super().__init__(node_name)
         self.status = State()
-        self.state_sub = rospy.Subscriber(
-            'mavros/state',
-            State,
-            self.status_cb)
+        self.state_sub = self.create_subscription(
+            State, 'mavros/state', self.status_cb, 10)
 
     def status_cb(self, msg):
         self.status = msg
 
+    def call_service(self, srv_type, srv_name, request):
+        service = self.create_client(srv_type, srv_name)
+        while not service.wait_for_service(timeout_sec=1.0):
+           self.get_logger().info(srv_name + ' not available, waiting again...')
+        resp = service.call_async(request)
+
     def set_mode(self, mode):
-        rospy.wait_for_service('mavros/set_mode')
-        try:
-            # Create a proxy for the set_mode service
-            set_mode = rospy.ServiceProxy('mavros/set_mode', SetMode)
+        req = SetMode.Request()
+        req.custom_mode = mode
+        self.call_service(SetMode, 'mavros/set_mode', req)
 
-            # Call set_mode service
-            return set_mode(custom_mode=mode)
-        except rospy.ServiceException as e:
-            print("Service call failed: %s"%e)
-
-    def arm_motors(self, bool):
-        rospy.wait_for_service('mavros/cmd/arming')
-        try:
-            # Create a proxy for the arming service
-            arm_motors = rospy.ServiceProxy('mavros/cmd/arming', CommandBool)
-
-            # Call arm_motors service
-            return arm_motors(bool)
-        except rospy.ServiceException as e:
-            print("Service call failed: %s"%e)
+    def arm_motors(self, arm_motors_bool):
+        req = CommandBool.Request()
+        req.value = arm_motors_bool
+        self.call_service(CommandBool, 'mavros/cmd/arming', req)
