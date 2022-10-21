@@ -19,7 +19,7 @@ class MavrosWrapper(Node):
     def call_service(self, srv_type, srv_name, request):
         service = self.create_client(srv_type, srv_name)
         while not service.wait_for_service(timeout_sec=1.0):
-           self.get_logger().info(srv_name + ' not available, waiting again...')
+            self.get_logger().info(srv_name + ' not available, waiting...')
         resp = service.call_async(request)
 
     def set_mode(self, mode):
