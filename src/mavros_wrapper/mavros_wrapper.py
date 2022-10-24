@@ -48,3 +48,20 @@ class MavrosWrapper(Node):
         req = CommandBool.Request()
         req.value = arm_motors_bool
         self.call_service(CommandBool, 'mavros/cmd/arming', req)
+
+    def setpoint_position_local(
+            self, x=.0, y=.0, z=.0, rx=.0, ry=.0, rz=.0, rw=1.0):
+
+        self.setpoint_poisition_local_pub = self.create_publisher(
+            PoseStamped, 'mavros/setpoint_position/local', 10)
+
+        pose = PoseStamped()
+        pose.pose.position.x = x
+        pose.pose.position.y = y
+        pose.pose.position.z = z
+        pose.pose.orientation.x = rx
+        pose.pose.orientation.y = ry
+        pose.pose.orientation.z = rz
+        pose.pose.orientation.w = rw
+
+        self.setpoint_poisition_local_pub.publish(pose)
