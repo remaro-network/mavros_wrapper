@@ -9,6 +9,10 @@ from mavros_msgs.msg import State
 from mavros_msgs.srv import CommandBool
 from mavros_msgs.srv import SetMode
 
+from rcl_interfaces.srv import SetParameters
+from rcl_interfaces.msg import Parameter
+from rcl_interfaces.msg import ParameterType
+
 
 class MavrosWrapper(Node):
     def __init__(self, node_name='mavros_wrapper'):
@@ -37,7 +41,32 @@ class MavrosWrapper(Node):
         service = self.create_client(srv_type, srv_name)
         while not service.wait_for_service(timeout_sec=1.0):
             self.get_logger().info(srv_name + ' not available, waiting...')
-        resp = service.call_async(request)
+        future = service.call_async(request)
+        return future
+
+    def set_mavros_param(self, name, type,  value):
+        parameter_dict = {
+            ParameterType.PARAMETER_BOOL: 'bool_value',
+            ParameterType.PARAMETER_INTEGER: 'integer_value',
+            ParameterType.PARAMETER_DOUBLE: 'double_value',
+            ParameterType.PARAMETER_STRING: 'string_value',
+            ParameterType.PARAMETER_BYTE_ARRAY: 'byte_array_value',
+            ParameterType.PARAMETER_BOOL_ARRAY: 'bool_array_value',
+            ParameterType.PARAMETER_INTEGER_ARRAY: 'integer_array_value',
+            ParameterType.PARAMETER_DOUBLE_ARRAY: 'double_array_value',
+            ParameterType.PARAMETER_STRING_ARRAY: 'string_array_value'
+        }
+
+        req = SetParameters.Request()
+
+        parameter = Parameter()
+        parameter.name = name
+        parameter.value.type = type
+        setattr(parameter.value, parameter_dict[type], value)
+        req.parameters.append(parameter)
+
+        return self.call_service(
+            SetParameters, 'mavros/param/set_parameters', req)
 
     def set_mode(self, mode):
         req = SetMode.Request()
