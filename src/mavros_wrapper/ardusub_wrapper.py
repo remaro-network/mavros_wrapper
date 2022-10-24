@@ -6,6 +6,7 @@ class BlueROVArduSubWrapper(MavrosWrapper):
     def __init__(self, node_name='bluerov_mavros'):
         super().__init__(node_name)
 
+        # TODO: only necessary when rc_override is set to True
         self.rc_override_pub = self.create_publisher(OverrideRCIn,
                                                      'mavros/rc/override', 10)
 
