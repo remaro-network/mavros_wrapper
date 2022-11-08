@@ -84,6 +84,14 @@ class MavrosWrapper(Node):
         self.setpoint_poisition_local_pub = self.create_publisher(
             PoseStamped, 'mavros/setpoint_position/local', 10)
 
+        pose = self.pose_stamped(x,y,z,rx,ry,rz,rw) 
+        print('setpoint_postion_local value ', pose.pose.position)
+
+        self.setpoint_poisition_local_pub.publish(pose)
+
+    def pose_stamped(
+            self, x=.0, y=.0, z=.0, rx=.0, ry=.0, rz=.0, rw=1.0):
+
         pose = PoseStamped()
         pose.pose.position.x = x
         pose.pose.position.y = y
@@ -92,5 +100,11 @@ class MavrosWrapper(Node):
         pose.pose.orientation.y = ry
         pose.pose.orientation.z = rz
         pose.pose.orientation.w = rw
+        
+        return pose
 
-        self.setpoint_poisition_local_pub.publish(pose)
+    def check_setpoint_reached(self, pose, delta=0.1):
+        return abs(self.local_pos.pose.position.x - pose.pose.position.x) <= delta \
+                and abs(self.local_pos.pose.position.y - pose.pose.position.y) <= delta \
+                and abs(self.local_pos.pose.position.z - pose.pose.position.z) <= delta
+
