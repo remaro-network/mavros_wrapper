@@ -93,6 +93,7 @@ class MavrosWrapper(Node):
             self, x=.0, y=.0, z=.0, rx=.0, ry=.0, rz=.0, rw=1.0):
 
         pose = PoseStamped()
+        pose.header.stamp = self.get_clock().now().to_msg()
         pose.pose.position.x = x
         pose.pose.position.y = y
         pose.pose.position.z = z
