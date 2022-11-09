@@ -44,7 +44,7 @@ class MavrosWrapper(Node):
         future = service.call_async(request)
         return future
 
-    def set_mavros_param(self, name, type,  value):
+    def set_mavros_param(self, name, type, value):
         parameter_dict = {
             ParameterType.PARAMETER_BOOL: 'bool_value',
             ParameterType.PARAMETER_INTEGER: 'integer_value',
@@ -84,7 +84,7 @@ class MavrosWrapper(Node):
         self.setpoint_poisition_local_pub = self.create_publisher(
             PoseStamped, 'mavros/setpoint_position/local', 10)
 
-        pose = self.pose_stamped(x,y,z,rx,ry,rz,rw) 
+        pose = self.pose_stamped(x, y, z, rx, ry, rz, rw)
         print('setpoint_postion_local value ', pose.pose.position)
 
         self.setpoint_poisition_local_pub.publish(pose)
@@ -101,11 +101,14 @@ class MavrosWrapper(Node):
         pose.pose.orientation.y = ry
         pose.pose.orientation.z = rz
         pose.pose.orientation.w = rw
-        
+
         return pose
 
     def check_setpoint_reached(self, pose, delta=0.1):
-        return abs(self.local_pos.pose.position.x - pose.pose.position.x) <= delta \
-                and abs(self.local_pos.pose.position.y - pose.pose.position.y) <= delta \
-                and abs(self.local_pos.pose.position.z - pose.pose.position.z) <= delta
-
+        return abs(
+            self.local_pos.pose.position.x -
+            pose.pose.position.x) <= delta and abs(
+            self.local_pos.pose.position.y -
+            pose.pose.position.y) <= delta and abs(
+            self.local_pos.pose.position.z -
+            pose.pose.position.z) <= delta
