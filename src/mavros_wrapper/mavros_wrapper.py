@@ -23,6 +23,7 @@ class MavrosWrapper(Node):
 
         # TODO: this should be optional
         self.local_pos = PoseStamped()
+        self.local_pos_received = False
         local_position_sub_qos = QoSProfile(
             reliability=rclpy.qos.ReliabilityPolicy.BEST_EFFORT, depth=5)
         self.local_position_sub = self.create_subscription(
@@ -36,6 +37,7 @@ class MavrosWrapper(Node):
 
     def local_pos_cb(self, msg):
         self.local_pos = msg
+        self.local_pos_received = True
 
     def call_service(self, srv_type, srv_name, request):
         service = self.create_client(srv_type, srv_name)
