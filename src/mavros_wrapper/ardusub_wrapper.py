@@ -1,5 +1,5 @@
 from mavros_msgs.msg import OverrideRCIn
-from mavros_wrapper.mavros_wrapper import *
+from mavros_wrapper.mavros_wrapper import MavrosWrapper
 
 
 class BlueROVArduSubWrapper(MavrosWrapper):
