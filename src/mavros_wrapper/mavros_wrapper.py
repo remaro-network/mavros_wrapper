@@ -115,3 +115,10 @@ class MavrosWrapper(Node):
             pose.pose.position.y) <= delta and abs(
             self.local_pos.pose.position.z -
             pose.pose.position.z) <= delta
+
+    def check_setpoint_reached_xy(self, pose, delta=0.1):
+        return abs(
+            self.local_pos.pose.position.x -
+            pose.pose.position.x) <= delta and abs(
+            self.local_pos.pose.position.y -
+            pose.pose.position.y) <= delta
