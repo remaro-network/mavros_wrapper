@@ -87,7 +87,6 @@ class MavrosWrapper(Node):
             PoseStamped, 'mavros/setpoint_position/local', 10)
 
         pose = self.pose_stamped(x, y, z, rx, ry, rz, rw)
-        print('setpoint_postion_local value ', pose.pose.position)
 
         self.setpoint_poisition_local_pub.publish(pose)
         return pose
